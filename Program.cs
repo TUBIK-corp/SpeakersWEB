@@ -1,8 +1,12 @@
+using SpeakersWEB.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<AuthorizationService>();
+builder.Services.AddTransient<CookieService>();
 
 var app = builder.Build();
 
