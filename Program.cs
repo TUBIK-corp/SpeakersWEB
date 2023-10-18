@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<AuthorizationService>();
-builder.Services.AddTransient<CookieService>();
+//builder.Services.AddTransient<CookieService>();
 
 var app = builder.Build();
 

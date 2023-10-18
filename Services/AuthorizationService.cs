@@ -1,29 +1,31 @@
-﻿namespace SpeakersWEB.Services
+﻿using SpeakersWEB.Models;
+
+namespace SpeakersWEB.Services
 {
     public class AuthorizationService
     {
-        private readonly SpeakersWEBdbContext _context;
+        private readonly BellsContext _context;
 
-        public AuthorizationService(SpeakersWEBdbContext context)
+        public AuthorizationService(BellsContext context)
         {
             _context = context;
         }
 
-        public async Task<UserAuthToken> GenerateTokenAsync(User user, int tokenLifeTime)
-        {
-            var token = new UserAuthToken
-            {
-                Token = Guid.NewGuid().ToString(),
-                ExpiresAt = DateTime.Now + TimeSpan.FromSeconds(tokenLifeTime)
-            };
+        //public async Task<UserAuthToken> GenerateTokenAsync(User user, int tokenLifeTime)
+        //{
+        //    var token = new UserAuthToken
+        //    {
+        //        Token = Guid.NewGuid().ToString(),
+        //        ExpiresAt = DateTime.Now + TimeSpan.FromSeconds(tokenLifeTime)
+        //    };
 
-            await _context.UserAuthTokens.AddAsync(token);
+        //    await _context.UserAuthTokens.AddAsync(token);
 
-            token.User = user;
+        //    token.User = user;
 
-            await _context.SaveChangesAsync();
+        //    await _context.SaveChangesAsync();
 
-            return token;
-        }
+        //    return token;
+        //}
     }
 }
