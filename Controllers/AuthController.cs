@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpeakersWEB.Models;
+using SpeakersWEB.Services;
 using SpeakersWEB.Types;
 
 namespace SpeakersWEB.Controllers
@@ -10,10 +11,12 @@ namespace SpeakersWEB.Controllers
     public class AuthController : ControllerBase
     {
         private readonly BellsContext _context;
+        private AuthorizationService _service;
 
         public AuthController(BellsContext context)
         {
             _context = context;
+            _service = new AuthorizationService(context);
         }
 
         [HttpPost]
@@ -30,15 +33,18 @@ namespace SpeakersWEB.Controllers
             if (!firstAssociatedUser.Password.Equals(login.PasswordHash))
             {
                 return Unauthorized();
-
             }
 
-            return Ok();
+            var token = await _service.GenerateTokenAsync(firstAssociatedUser);
+
+            return Ok(token);
 
         }
-        public class FuckOff
+
+        public class LoginType
         {
-            public string Who { get; set; }
+            public string Username { get; set; }
+            public string PasswordHash { get; set; }
         }
     }
 }

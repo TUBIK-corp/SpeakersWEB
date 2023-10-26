@@ -11,13 +11,15 @@ namespace SpeakersWEB.Services
             _context = context;
         }
 
-        public async Task<UserToken> GenerateTokenAsync(User user, int tokenLifeTime)
+        public async Task<UserToken> GenerateTokenAsync(User user)
         {
             var token = new UserToken
             {
                 Token = Guid.NewGuid().ToString()
             };
 
+            var oldUserTokens = _context.UserTokens.Where(x => x.UserId == user.Id);
+            _context.UserTokens.RemoveRange(oldUserTokens);
             await _context.UserTokens.AddAsync(token);
 
             token.UserId = user.Id;
