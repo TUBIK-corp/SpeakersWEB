@@ -1,14 +1,14 @@
-import { LoginPage } from "./components/LoginPage";
-import { Home } from "./components/Home";
+import LoginPage from "./components/LoginPage";
+import Home from "./components/Home";
 
 const AppRoutes = [
   {
     index: true,
-    element: <Home />
+    element: <Home/>
   },
   {
     path: '/login/',
-    element: <LoginPage />
+    element: <LoginPage/>
   }
 ];
 

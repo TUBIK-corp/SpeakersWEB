@@ -38,7 +38,6 @@ namespace SpeakersWEB.Controllers
             var token = await _service.GenerateTokenAsync(firstAssociatedUser);
 
             return Ok(token);
-
         }
 
         public class LoginType

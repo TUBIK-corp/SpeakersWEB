@@ -1,6 +1,4 @@
-﻿import { useHistory } from 'react-router-dom'
-
-class api {
+﻿class Api {
 
     async fetchData(endpoint, method = "GET", data = null) {
         const requestOptions = {
@@ -39,4 +37,5 @@ class api {
 
 }
 
+const api = new Api();
 export default api;

@@ -8,15 +8,9 @@ export class CookieHelper {
     }
 
     canAuthByCookie() {
-        let cookie = this.getCookie('Token')
+        let cookie = this.getCookie('access_token')
 
         return !(cookie === undefined || cookie === null || cookie === '')
-    }
-
-    async checkIfCookieCanUseForAuth() {
-        const api = new api()
-
-        return await api.isTokenActive(this.getCookie("Token"))
     }
 
     deleteAllCookies() {
