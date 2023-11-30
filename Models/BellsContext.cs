@@ -8,7 +8,7 @@ public partial class BellsContext : DbContext
 {
     public BellsContext()
     {
-
+        Database.EnsureCreated();
     }
 
     public BellsContext(DbContextOptions<BellsContext> options)
