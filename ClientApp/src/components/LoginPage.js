@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from './api'; // Импортируем ваш класс api
 import { CookieHelper } from './CookieHelper';
-import Cookies from 'js-cookie';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -15,9 +14,12 @@ const LoginPage = () => {
         try {
             const cookie = new CookieHelper();
             if (!cookie.canAuthByCookie()) {
-                const response = await api.Login(username, password);
-                Cookies.set('access_token', response.token, { expires: 7 }); // 'expires' sets the cookie expiration in days
-
+                const response = await api.Login(username, password);             
+                var now = new Date();
+                var time = now.getTime();
+                var expireTime = time + 1000 * 36000;
+                now.setTime(expireTime);
+                document.cookie = 'access_token='+response.token+';expires=' + now.toUTCString() + ';path=/';
                 // Обработка успешного логина, например, перенаправление на другую страницу
                 console.log('Login successful:', response);
                 // Перенаправление на домашнюю страницу после успешной логинизации
