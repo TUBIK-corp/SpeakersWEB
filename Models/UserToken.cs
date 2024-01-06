@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SpeakersWEB.Models;
 
@@ -9,5 +8,5 @@ public partial class UserToken
 
     public int UserId { get; set; }
 
-    public string Token { get; set; } = null!;
+    public string Token { get; set; }
 }

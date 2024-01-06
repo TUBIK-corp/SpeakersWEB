@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpeakersWEB.Models;
 using SpeakersWEB.Services;
@@ -37,7 +38,7 @@ namespace SpeakersWEB.Controllers
 
             var token = await _service.GenerateTokenAsync(firstAssociatedUser);
 
-            return Ok(token);
+            return Ok(new { token });
         }
 
         public class LoginType

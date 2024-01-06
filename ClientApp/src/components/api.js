@@ -28,13 +28,30 @@
 
         try {
             let response = await this.fetchData('/api/auth/login', 'POST', loginData);
-            alert('Login successful: ' + JSON.stringify(response))
+            localStorage.setItem('username', username);
+            //alert('Login successful: ' + JSON.stringify(response))
             return response
         } catch (error) {
             alert('Login failed: ' + error.message) // Перехватывать ошибки и обрабатывать их где-то в другом месте
         }
     }
-
+    async getBells() {
+        try {
+            const response = await this.fetchData('/api/bells'); // Предполагая, что есть соответствующий API-эндпоинт
+            return response;
+        } catch (error) {
+            console.error('Failed to get bell data:', error);
+            throw error;
+        }
+    }
+    async createBell(bellData) {
+        try {
+            const response = await this.fetchData('/api/bells', 'POST', bellData);
+            return response;
+        } catch (error) {
+            throw new Error('Failed to create bell: ' + error.message);
+        }
+    }
 }
 
 const api = new Api();

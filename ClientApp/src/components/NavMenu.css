@@ -1,18 +1,83 @@
 ﻿a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
-html {
-  font-size: 14px;
+body, html {
+    overflow: hidden;
+    height: 100%;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+/* Добавлены стили для навигационного меню */
+.navbar {
+    background-color: #4CAF50; /* Изменен цвет фона на более мягкий зеленый */
+    padding: 10px;
+}
+
+.navbar-toggler-icon {
+    background-color: white;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+    margin-right: 15px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #f0f0f0;
+    transition: color 0.3s;
+}
+
+.nav-username {
+    color: #4CAF50; /* Цвет текста зеленый */
+    font-weight: bold;
+    font-size: 16px;
+    margin-right: 10px; /* Добавлен отступ справа */
+    padding: 8px; /* Увеличен внутренний отступ */
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Фон светлый */
+    border: 1px solid #ddd; /* Граница */
+}
+
+.navbar-brand,
+.nav-logout {
+    color: white;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+    border: 2px solid white; /* Рамка белого цвета */
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar-brand:hover,
+.nav-logout:hover {
+    background-color: white; /* Изменен цвет при наведении на белый */
+    color: #4CAF50; /* Изменен цвет текста при наведении на зеленый */
+    transition: background-color 0.3s, color 0.3s;
 }

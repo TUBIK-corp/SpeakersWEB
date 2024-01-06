@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "react-datepicker": "^4.25.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-paginate": "^8.2.0",
     "react-router-dom": "^6.17.0"
   }
 }

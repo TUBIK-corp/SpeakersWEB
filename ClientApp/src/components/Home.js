@@ -1,95 +1,161 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import api from './api';
 import { useNavigate } from 'react-router-dom';
-import { CookieHelper }  from './CookieHelper';
+import { CookieHelper } from './CookieHelper';
+import './Home.css';
 
 const Home = () => {
-    const [tables, setTables] = useState([]);
-    const [selectedTable, setSelectedTable] = useState('');
-    const [tableData, setTableData] = useState([]);
+    const [bells, setBells] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const bellsContainerRef = useRef(null);
+    const perPage = 10;
     const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [newBell, setNewBell] = useState({
+        time: '',
+        audioFilePath: '',
+        uploaderName: localStorage.getItem('username'),
+        duration: '',
+        isUpcoming: false
+    });
 
     useEffect(() => {
         const cookieService = new CookieHelper();
         if (!cookieService.canAuthByCookie()) {
-            // Если условие не выполняется, перенаправляем пользователя на другую страницу
+            localStorage.setItem('username', null);
             navigate('/login');
+        } else {
+            fetchBellsData();
         }
     }, [navigate]);
 
     useEffect(() => {
-        // Получаем список таблиц с сервера при загрузке компонента
-        const fetchTables = async () => {
-            try {
-                const response = await api.fetchData('/api/tables');
-                setTables(response); // Устанавливаем список таблиц в состояние
-            } catch (error) {
-                console.error('Error fetching tables:', error);
-            }
-        };
+        scrollToUpcoming();
+    }, [bells]);
 
-        fetchTables();
-    }, []); // Пустой массив второго аргумента означает, что эффект будет запускаться только при монтировании и размонтировании компонента
+    const fetchBellsData = async () => {
+        try {
+            const response = await api.fetchData('/api/bells');
+            setBells(response);
+            setCurrentPage((prevPage) => prevPage + 1);
+        } catch (error) {
+            console.error('Failed to fetch bell data:', error);
+        }
+    };
 
-    useEffect(() => {
-        // Получаем данные выбранной таблицы с сервера при изменении выбранной таблицы
-        const fetchTableData = async () => {
-            if (selectedTable) {
-                try {
-                    const response = await api.fetchData(`/api/tables/${selectedTable}`);
-                    setTableData(response); // Устанавливаем данные таблицы в состояние
-                } catch (error) {
-                    console.error('Error fetching table data:', error);
+    const formatTime = (time) => {
+        return new Intl.DateTimeFormat('ru-RU', {
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+        }).format(new Date(time));
+    };
+
+    const scrollToUpcoming = () => {
+        if (bellsContainerRef.current) {
+            const upcomingBell = bells.find((bell) => bell.isUpcoming);
+            if (upcomingBell) {
+                const upcomingBellElement = document.getElementById(`bell-${upcomingBell.id}`);
+                if (upcomingBellElement) {
+                    upcomingBellElement.scrollIntoView({ behavior: 'smooth' });
                 }
             }
-        };
+        }
+    };
 
-        fetchTableData();
-    }, [selectedTable]); // Передаем selectedTable как зависимость, чтобы эффект запускался при изменении выбранной таблицы
+    const handleAudioFileChange = async (e) => {
+        const file = e.target.files[0];
+        setSelectedFile(file);
+        if (file) {
+            const audio = new Audio();
+            audio.src = URL.createObjectURL(file);
+
+            audio.addEventListener('loadedmetadata', () => {
+                const durationInSeconds = Math.ceil(audio.duration);
+                setNewBell({
+                    ...newBell,
+                    duration: secondsToTimeSpan(durationInSeconds),
+                    audioFilePath: URL.createObjectURL(file)
+                });
+            });
+        }
+    };
+
+    const handleCreateBell = async () => {
+        try {
+            const createdBell = await api.createBell(newBell);
+            setNewBell({
+                time: '',
+                audioFilePath: '',
+                uploaderName: localStorage.getItem('username'),
+                duration: '',
+                isUpcoming: false
+            });
+            setSelectedFile(null);
+            fetchBellsData();
+        } catch (error) {
+            console.error('Failed to create bell:', error);
+        }
+    };
+
+    const secondsToTimeSpan = (totalSeconds) => {
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
 
     return (
-        <div className="container mt-5">
-            <h1>Выбор таблицы из базы данных</h1>
-            <div className="form-group mt-3">
-                <label>Выберите таблицу:</label>
-                <select
-                    className="form-control"
-                    value={selectedTable}
-                    onChange={(e) => setSelectedTable(e.target.value)}
-                >
-                    <option value="">Выберите таблицу</option>
-                    {tables.map((table) => (
-                        <option key={table.id} value={table.name}>
-                            {table.name}
-                        </option>
+        <div className="home-container">
+            <div className="bells-container">
+                <h1>График звонков</h1>
+                <ul className="bells-list" ref={bellsContainerRef}>
+                    {bells.map((bell) => (
+                        <li
+                            key={bell.id}
+                            id={`bell-${bell.id}`}
+                            className={bell.isUpcoming ? 'upcoming-bell' : 'past-bell'}
+                        >
+                            <span className="bell-info">
+                                Время: {formatTime(bell.time)}, Длительность: {bell.duration}, Выложил: {bell.uploaderName}, Id: {bell.id}
+                            </span>
+                            <audio controls>
+                                <source src={bell.audioFileLocation} type="audio/mp3" />
+                                Ваш браузер не поддерживает аудио-элемент.
+                            </audio>
+                        </li>
                     ))}
-                </select>
+                </ul>
             </div>
-            {selectedTable && (
-                <div className="mt-4">
-                    <h2>Данные таблицы {selectedTable}:</h2>
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                {/* Заголовки таблицы */}
-                                {Object.keys(tableData[0]).map((key) => (
-                                    <th key={key}>{key}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* Данные таблицы */}
-                            {tableData.map((row, index) => (
-                                <tr key={index}>
-                                    {Object.values(row).map((value, index) => (
-                                        <td key={index}>{value}</td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+            <div className="create-bell-container">
+                <h1>Создать новый звонок</h1>
+                <form>
+                    <div className="form-group">
+                        <label>Время:</label>
+                        <input type="datetime-local" value={newBell.time} onChange={(e) => setNewBell({ ...newBell, time: e.target.value })} step="1" />
+                    </div>
+                    <div className="form-group">
+                        <label>Аудиофайл:</label>
+                        <label className="custom-file-upload">
+                            {selectedFile ? selectedFile.name : 'Выбрать файл'}
+                            <input type="file" onChange={handleAudioFileChange} accept="audio/*" />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label>Выложил:</label>
+                        <input type="text" value={newBell.uploaderName} disabled />
+                    </div>
+                    <div className="form-group">
+                        <label>Длительность:</label>
+                        <input type="text" value={newBell.duration} disabled />
+                    </div>
+                    <button type="button" onClick={handleCreateBell}>Создать звонок</button>
+                </form>
+            </div>
         </div>
     );
 };
