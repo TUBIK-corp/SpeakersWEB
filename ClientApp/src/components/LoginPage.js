@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+п»їimport React, { useState, useEffect } from 'react';
+import api from './api';
 import { useNavigate } from 'react-router-dom';
-import api from './api'; // Импортируем ваш класс api
 import { CookieHelper } from './CookieHelper';
+import { NavMenu } from './NavMenu';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const cookieService = new CookieHelper();
+        if (cookieService.canAuthByCookie()) {
+            navigate('/');
+        }
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -14,49 +22,51 @@ const LoginPage = () => {
         try {
             const cookie = new CookieHelper();
             if (!cookie.canAuthByCookie()) {
-                const response = await api.Login(username, password);             
+                const response = await api.Login(username, password);
                 var now = new Date();
                 var time = now.getTime();
                 var expireTime = time + 1000 * 36000;
                 now.setTime(expireTime);
-                document.cookie = 'access_token='+response.token+';expires=' + now.toUTCString() + ';path=/';
-                // Обработка успешного логина, например, перенаправление на другую страницу
+                document.cookie = 'access_token=' + response.token + ';expires=' + now.toUTCString() + ';path=/';
+                // РћР±СЂР°Р±РѕС‚РєР° СѓСЃРїРµС€РЅРѕРіРѕ Р»РѕРіРёРЅР°, РЅР°РїСЂРёРјРµСЂ, РїРµСЂРµРЅР°РїСЂР°РІР»РµРЅРёРµ РЅР° РґСЂСѓРіСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
                 console.log('Login successful:', response);
-                // Перенаправление на домашнюю страницу после успешной логинизации
+                // РџРµСЂРµРЅР°РїСЂР°РІР»РµРЅРёРµ РЅР° РґРѕРјР°С€РЅСЋСЋ СЃС‚СЂР°РЅРёС†Сѓ РїРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕР№ Р»РѕРіРёРЅРёР·Р°С†РёРё
                 navigate('/');
             } else navigate('/');
         } catch (error) {
-            // Обработка ошибки при логине
+            // РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РєРё РїСЂРё Р»РѕРіРёРЅРµ
             console.error('Login failed:', error);
         }
     };
 
     return (
-        <div className="login-form">
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <div className="form-group">
-                    <label>Username</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Login</button>
-            </form>
+        <div className="home-container">
+            <div className="login-form">
+                <h1 className="title">РђРІС‚РѕСЂРёР·Р°С†РёСЏ</h1>
+                <form onSubmit={handleLogin}>
+                    <div className="form-group">
+                        <label>РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</label>
+                        <input
+                            type="text"
+                            className="input"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>РџР°СЂРѕР»СЊ:</label>
+                        <input
+                            type="password"
+                            className="input"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="button">Р’РѕР№С‚Рё</button>
+                </form>
+            </div>
         </div>
     );
 };

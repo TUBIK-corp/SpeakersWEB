@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpeakersWEB.Models;
 using SpeakersWEB.Services;
-using SpeakersWEB.Types;
 
 namespace SpeakersWEB.Controllers
 {

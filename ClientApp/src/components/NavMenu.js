@@ -1,42 +1,40 @@
-import React, { Component } from 'react';
+п»їimport React, { Component } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 import { CookieHelper } from './CookieHelper';
 
 export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+    constructor(props) {
+        super(props);
 
-  constructor (props) {
-    super(props);
+        this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.state = {
+            collapsed: true
+        };
+    }
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
-
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
+    toggleNavbar() {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
     }
 
     handleLogout = () => {
-        // Удаляем имя пользователя из localStorage при разлогинивании
+        // РЈРґР°Р»СЏРµРј РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· localStorage РїСЂРё СЂР°Р·Р»РѕРіРёРЅРёРІР°РЅРёРё
         localStorage.removeItem('username');
 
         const cookieHelper = new CookieHelper();
         cookieHelper.deleteAllCookies();
 
-        // Дополнительные шаги по разлогиниванию, например, перенаправление на страницу логина
+        // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ С€Р°РіРё РїРѕ СЂР°Р·Р»РѕРіРёРЅРёРІР°РЅРёСЋ, РЅР°РїСЂРёРјРµСЂ, РїРµСЂРµРЅР°РїСЂР°РІР»РµРЅРёРµ РЅР° СЃС‚СЂР°РЅРёС†Сѓ Р»РѕРіРёРЅР°
         // ...
         this.setState({ key: Date.now() });
         console.log('User logged out');
     }
 
     render() {
-        // Получим имя пользователя из localStorage
+        // РџРѕР»СѓС‡РёРј РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· localStorage
         const username = localStorage.getItem('username');
 
         return (
@@ -47,10 +45,10 @@ export class NavMenu extends Component {
                     <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav flex-grow">
                             <NavItem>
-                                <NavLink tag={Link} className="nav-logout" to="/login" onClick={this.handleLogout}>Logout</NavLink>
+                                <NavLink tag={Link} className="nav-logout" to="/login" onClick={this.handleLogout}>Р’С‹Р№С‚Рё</NavLink>
                             </NavItem>
                         </ul>
-                        {/* Отображаем имя пользователя в NavMenu */}
+                        {/* РћС‚РѕР±СЂР°Р¶Р°РµРј РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ NavMenu */}
                         {username && <span className="nav-username">{username}</span>}
                     </Collapse>
                 </Navbar>

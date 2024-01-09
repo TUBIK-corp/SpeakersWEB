@@ -2,7 +2,6 @@
 import api from './api';
 import { useNavigate } from 'react-router-dom';
 import { CookieHelper } from './CookieHelper';
-import './Home.css';
 
 const Home = () => {
     const [bells, setBells] = useState([]);
@@ -11,6 +10,7 @@ const Home = () => {
     const perPage = 10;
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
+    const [audioFile, setAudioFile] = useState(null);
     const [newBell, setNewBell] = useState({
         time: '',
         audioFilePath: '',
@@ -78,15 +78,15 @@ const Home = () => {
                 setNewBell({
                     ...newBell,
                     duration: secondsToTimeSpan(durationInSeconds),
-                    audioFilePath: URL.createObjectURL(file)
                 });
+                setAudioFile(file);
             });
         }
     };
 
     const handleCreateBell = async () => {
         try {
-            const createdBell = await api.createBell(newBell);
+            const createdBell = await api.createBell(newBell, audioFile);
             setNewBell({
                 time: '',
                 audioFilePath: '',
@@ -112,7 +112,7 @@ const Home = () => {
     return (
         <div className="home-container">
             <div className="bells-container">
-                <h1>График звонков</h1>
+                <h1 className="title">Расписание звонков</h1>
                 <ul className="bells-list" ref={bellsContainerRef}>
                     {bells.map((bell) => (
                         <li
@@ -121,10 +121,10 @@ const Home = () => {
                             className={bell.isUpcoming ? 'upcoming-bell' : 'past-bell'}
                         >
                             <span className="bell-info">
-                                Время: {formatTime(bell.time)}, Длительность: {bell.duration}, Выложил: {bell.uploaderName}, Id: {bell.id}
+                                Время: {formatTime(bell.time)}, Длительность: {bell.duration}, Выложил: {bell.uploaderName}
                             </span>
                             <audio controls>
-                                <source src={bell.audioFileLocation} type="audio/mp3" />
+                                <source src={bell.audioFilePath} type="audio/mp3" />
                                 Ваш браузер не поддерживает аудио-элемент.
                             </audio>
                         </li>
@@ -132,7 +132,7 @@ const Home = () => {
                 </ul>
             </div>
             <div className="create-bell-container">
-                <h1>Создать новый звонок</h1>
+                <h1 className="title">Создать новый звонок</h1>
                 <form>
                     <div className="form-group">
                         <label>Время:</label>

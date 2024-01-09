@@ -44,12 +44,33 @@
             throw error;
         }
     }
-    async createBell(bellData) {
+    async createBell(bellData, audioFile) {
         try {
+            bellData.audioFilePath = 'api/audio/' + await api.saveAudio(audioFile);
             const response = await this.fetchData('/api/bells', 'POST', bellData);
             return response;
         } catch (error) {
             throw new Error('Failed to create bell: ' + error.message);
+        }
+    }
+    async saveAudio(audioFile) {
+        try {
+            const formData = new FormData();
+            formData.append("audio", audioFile);
+
+            const response = await fetch('/api/audio/save', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.text();
+            return result;
+        } catch (error) {
+            throw new Error('Failed to save audio: ' + error.message);
         }
     }
 }
