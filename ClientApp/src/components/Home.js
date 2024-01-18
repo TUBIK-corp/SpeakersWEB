@@ -12,6 +12,7 @@ const Home = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [audioFile, setAudioFile] = useState(null);
     const [newBell, setNewBell] = useState({
+        info: '',
         time: '',
         audioFilePath: '',
         uploaderName: localStorage.getItem('username'),
@@ -88,6 +89,7 @@ const Home = () => {
         try {
             const createdBell = await api.createBell(newBell, audioFile);
             setNewBell({
+                info: '',
                 time: '',
                 audioFilePath: '',
                 uploaderName: localStorage.getItem('username'),
@@ -121,6 +123,9 @@ const Home = () => {
                             className={bell.isUpcoming ? 'upcoming-bell' : 'past-bell'}
                         >
                             <span className="bell-info">
+                                {bell.info}
+                            </span>
+                            <span className="bell-info">
                                 Время: {formatTime(bell.time)}, Длительность: {bell.duration}, Выложил: {bell.uploaderName}
                             </span>
                             <audio controls>
@@ -146,12 +151,16 @@ const Home = () => {
                         </label>
                     </div>
                     <div className="form-group">
-                        <label>Выложил:</label>
-                        <input type="text" value={newBell.uploaderName} disabled />
-                    </div>
-                    <div className="form-group">
                         <label>Длительность:</label>
                         <input type="text" value={newBell.duration} disabled />
+                    </div>
+                    <div className="form-group">
+                        <label>Описание:</label>
+                        <input type="text" value={newBell.info} onChange={(e) => setNewBell({ ...newBell, info: e.target.value })} />
+                    </div>
+                    <div className="form-group">
+                        <label>Выложил:</label>
+                        <input type="text" value={newBell.uploaderName} disabled />
                     </div>
                     <button type="button" onClick={handleCreateBell}>Создать звонок</button>
                 </form>

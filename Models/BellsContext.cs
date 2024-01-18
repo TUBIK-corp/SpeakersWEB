@@ -63,6 +63,7 @@ public partial class BellsContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_Bells");
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Info).IsRequired();
             entity.Property(e => e.Time).IsRequired();
             entity.Property(e => e.AudioFilePath).IsRequired();
             entity.Property(e => e.Duration).IsRequired();

@@ -6,6 +6,7 @@ namespace SpeakersWEB.Models;
 public partial class Bell
 {
     public int Id { get; set; }
+    public string Info { get; set; }
     public DateTime Time { get; set; }
     public string AudioFilePath { get; set; }
     public TimeSpan Duration { get; set; }
