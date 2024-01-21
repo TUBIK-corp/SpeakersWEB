@@ -1,5 +1,6 @@
 import LoginPage from "./components/LoginPage";
 import Home from "./components/Home";
+import PlayBellsPage from './components/PlayBellsPage';
 
 const AppRoutes = [
     {
@@ -9,6 +10,10 @@ const AppRoutes = [
     {
         path: '/login/',
         element: <LoginPage/>
+    },
+    {
+        path: '/player/',
+        element: <PlayBellsPage />,
     }
 ];
 

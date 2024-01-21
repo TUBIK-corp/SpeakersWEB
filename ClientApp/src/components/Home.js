@@ -7,7 +7,6 @@ const Home = () => {
     const [bells, setBells] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const bellsContainerRef = useRef(null);
-    const perPage = 10;
     const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
     const [audioFile, setAudioFile] = useState(null);
@@ -163,6 +162,7 @@ const Home = () => {
                         <input type="text" value={newBell.uploaderName} disabled />
                     </div>
                     <button type="button" onClick={handleCreateBell}>Создать звонок</button>
+                    <button type="button" className="emergency-button" >Экстренный звонок</button>
                 </form>
             </div>
         </div>
