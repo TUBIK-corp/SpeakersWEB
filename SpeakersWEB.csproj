@@ -24,12 +24,8 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Compile Remove="Новая папка\**" />
     <Content Remove="$(SpaRoot)**" />
-    <Content Remove="Новая папка\**" />
-    <EmbeddedResource Remove="Новая папка\**" />
     <None Remove="$(SpaRoot)**" />
-    <None Remove="Новая папка\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
@@ -37,6 +33,12 @@
     <Content Include="audio\62209940-48ac-4ef7-97fc-10b4a710f317.ogg" />
     <Content Include="audio\6e72780c-c2cb-4843-b2d0-cf7a402fa747.m4a" />
     <Content Include="audio\7fd3f147-8c1f-4f3e-a7b4-55774ccb8b8d.ogg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="audio\" />
+    <Folder Include="Recognizer\Models\" />
+    <Folder Include="Recognizer\Frames\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
